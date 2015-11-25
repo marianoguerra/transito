@@ -116,7 +116,7 @@ HTTP Requests
 You an make an http request that supports transit, json or edn but writting and
 reading the request and response in a more readable way, for example, make a
 request writing edn that will be transformed to transit before being sent, the
-response will be transformed to edn if possible to make it more readable:
+response will be transformed to edn if possible to make it more readable::
 
     $ echo '(increment {:value 20})' | transito http post http://localhost:8080/action e2t -
 
