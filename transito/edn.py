@@ -232,7 +232,7 @@ def dumps(obj):
                                 for k, v in obj.items()])
         return "{%s}" % keyvals
     elif isinstance(obj, Keyword):
-        return str(obj)
+        return ":" + str(obj)
     elif isinstance(obj, Symbol):
         return str(obj)
     elif obj is True or obj is transit_true:
