@@ -3,6 +3,11 @@
 History
 -------
 
+0.1.2 (2015-26-11)
+------------------
+
+* fix edn encoding from transit on http response
+
 0.1.1 (2015-25-11)
 ------------------
 

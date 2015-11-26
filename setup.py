@@ -25,7 +25,7 @@ test_requirements = [
 
 setup(
     name='transito',
-    version='0.1.1',
+    version='0.1.2',
     description="Command Line Tool to Work with Transit Format",
     long_description=readme + '\n\n' + history,
     author="Mariano Guerra",
