@@ -170,7 +170,7 @@ def format_response(resp):
 
     lines.append("")
     try:
-        data = read_transit_string(resp.text)
+        data = read_transit_string(resp.text, EDN_HANDLERS)
         lines.append(write_edn(data))
     except Exception:
         lines.append(resp.text)
