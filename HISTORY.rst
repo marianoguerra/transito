@@ -3,6 +3,11 @@
 History
 -------
 
+0.1.3 (2015-12-01)
+------------------
+
+* add support for keywords with namespaces in edn
+
 0.1.2 (2015-26-11)
 ------------------
 

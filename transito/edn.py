@@ -159,15 +159,19 @@ def value_string(state, p):
     return ast.literal_eval(p[0].value)
 
 @pg.production("value : ns_symbol")
-def value_symbol(state, p):
+def value_symbol_ns(state, p):
     return Symbol(p[0].value)
 
 @pg.production("value : symbol")
-def value_symbol_1(state, p):
+def value_symbol(state, p):
     return Symbol(p[0].value)
 
 @pg.production("value : colon symbol")
 def value_keyword(state, p):
+    return Keyword(p[1].value)
+
+@pg.production("value : colon ns_symbol")
+def value_keyword_ns(state, p):
     return Keyword(p[1].value)
 
 @pg.production("value : tag value")
