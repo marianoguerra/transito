@@ -15,9 +15,9 @@ with open('HISTORY.rst') as history_file:
     history = history_file.read().replace('.. :changelog:', '')
 
 requirements = [
-    'transit-python==0.8.250',
-    'requests==2.8.1',
-    'rply==0.7.4'
+    'transit-python',
+    'requests',
+    'rply'
 ]
 
 test_requirements = [
@@ -25,7 +25,7 @@ test_requirements = [
 
 setup(
     name='transito',
-    version='0.1.3',
+    version='0.1.4',
     description="Command Line Tool to Work with Transit Format",
     long_description=readme + '\n\n' + history,
     author="Mariano Guerra",
