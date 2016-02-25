@@ -4,7 +4,7 @@ import re
 import ast
 import collections
 
-from transit.transit_types import Keyword, Symbol, TaggedValue
+from transit.transit_types import Keyword, Symbol, TaggedValue, List, Vector
 import transit.transit_types
 
 transit_true = transit.transit_types.true
@@ -52,10 +52,6 @@ class Char(TaggedValue):
     def __init__(self, rep):
         TaggedValue.__init__(self, 'char', rep)
 
-class List(TaggedValue):
-    def __init__(self, rep):
-        TaggedValue.__init__(self, 'list', rep)
-
 NL = Char('\n')
 TAB = Char('\t')
 RETURN = Char('\r')
@@ -100,7 +96,7 @@ def value_map(state, p):
 
 @pg.production("value : ovec cvec")
 def value_empty_vec(state, p):
-    return []
+    return Vector([])
 
 @pg.production("value : olist clist")
 def value_empty_list(state, p):
@@ -112,7 +108,7 @@ def value_set(state, p):
 
 @pg.production("value : ovec items cvec")
 def value_vec(state, p):
-    return p[1]
+    return Vector(p[1])
 
 @pg.production("value : olist items clist")
 def value_list(state, p):
@@ -225,6 +221,8 @@ def dumps(obj):
     elif isinstance(obj, TaggedValue):
         if obj.tag == "list":
             return "(%s)" % " ".join([dumps(item) for item in obj.rep])
+        if obj.tag == "vector":
+            return "[%s]" % " ".join([dumps(item) for item in obj.rep])
         elif obj.tag == "char":
             return "\\%s" % CHARS.get(obj.rep, obj.rep)
         else:
@@ -322,3 +320,5 @@ if __name__ == "__main__":
     print(dumps(TaggedValue("y.Error", loads('{:reason "asd" :status 500}'))))
     print(dumps(loads("#y.Error {:foo 42}", {"y.Error": YError})))
     print(dumps(loads("#y.Error {:foo 42}", accept_unknown_tags=True)))
+    print(dumps(loads("[{[:a] (:b :c)}]")))
+    print(dumps(loads("[{(:a) [:b :c]}]")))
