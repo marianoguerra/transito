@@ -24,6 +24,7 @@ def get_arg_parser():
     p_j2t = subparsers.add_parser('j2t', help='convert json to transit')
     p_e2t = subparsers.add_parser('e2t', help='convert edn to transit')
     p_t2e = subparsers.add_parser('t2e', help='convert transit to edn')
+    p_e2e = subparsers.add_parser('e2e', help='edn roundtrip')
 
     p_http = subparsers.add_parser('http',
             help='make http requests with transit data')
@@ -49,6 +50,10 @@ def get_arg_parser():
     p_t2e.set_defaults(action='t2e')
     p_t2e.add_argument('path',
             help='path to transit file, use - to read from stdin')
+
+    p_e2e.set_defaults(action='e2e')
+    p_e2e.add_argument('path',
+            help='path to edn file, use - to read from stdin')
 
     return parser
 
@@ -120,7 +125,7 @@ def read_edn(path):
     else:
         handle = open(path)
 
-    return edn.loads(handle.read())
+    return edn.loads(handle.read(), accept_unknown_tags=True)
 
 def write_transit(value):
     sio = StringIO()
@@ -161,6 +166,11 @@ def edn_to_transit(args):
     '''handler for edn to transit action'''
     value = read_edn(args.path)
     return write_transit(value)
+
+def edn_to_edn(args):
+    '''handler for edn to transit action'''
+    value = read_edn(args.path)
+    return write_edn(value)
 
 def format_response(resp):
     lines = ["Status: " + str(resp.status_code)]
@@ -203,6 +213,7 @@ HANDLERS = {
     't2j': transit_to_json,
     'j2t': json_to_transit,
     'e2t': edn_to_transit,
+    'e2e': edn_to_edn,
     't2e': transit_to_edn,
 
     'http': http_req

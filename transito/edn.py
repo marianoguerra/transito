@@ -37,6 +37,7 @@ lg.add("char", r"\\.")
 lg.add("ns_symbol", NS_SYMBOL)
 lg.add("symbol", SYMBOL_RE)
 lg.add("string", r'"(\\\^.|\\.|[^\"])*"')
+lg.add("ns_tag", "#" + NS_SYMBOL)
 lg.add("tag", "#" + SYMBOL_RE)
 
 lg.ignore(r"[\s,\n]+")
@@ -46,7 +47,8 @@ lexer = lg.build()
 
 pg = ParserGenerator(["boolean", "nil", "float", "number", "olist", "clist",
 "omap", "cmap", "ovec", "cvec", "oset", "colon", "char_nl", "char_tab",
-"char_return", "char_space", "char", "symbol", "ns_symbol", "string", "tag"])
+"char_return", "char_space", "char", "symbol", "ns_symbol", "string",
+"tag", "ns_tag"])
 
 class Char(TaggedValue):
     def __init__(self, rep):
@@ -170,8 +172,7 @@ def value_keyword(state, p):
 def value_keyword_ns(state, p):
     return Keyword(p[1].value)
 
-@pg.production("value : tag value")
-def value_tagged(state, p):
+def handle_tagged_value(state, p):
     tag_name = p[0].value[1:]
     if tag_name in state.tagged:
         constr = state.tagged[tag_name]
@@ -180,6 +181,14 @@ def value_tagged(state, p):
         return TaggedValue(tag_name, p[1])
     else:
         raise KeyError("No registered constructor for tag '{}'".format(tag_name))
+
+@pg.production("value : tag value")
+def value_tagged(state, p):
+    return handle_tagged_value(state, p)
+
+@pg.production("value : ns_tag value")
+def value_tagged_ns(state, p):
+    return handle_tagged_value(state, p)
 
 parser = pg.build()
 
