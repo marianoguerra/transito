@@ -224,13 +224,20 @@ def encode_basestring(s):
 
     return '"' + ESCAPE.sub(replace, s) + '"'
 
+def dumps_cmap(items):
+    keyvals = ", ".join([" ".join([dumps(k), dumps(v)]) for k, v in items])
+    return "{%s}" % keyvals
+
 def dumps(obj):
     if hasattr(obj, "to_edn"):
         return dumps(obj.to_edn())
     elif isinstance(obj, TaggedValue):
-        if obj.tag == "list":
+        if obj.tag == "cmap":
+            itr = iter(obj.rep)
+            return dumps_cmap(zip(itr, itr))
+        elif obj.tag == "list":
             return "(%s)" % " ".join([dumps(item) for item in obj.rep])
-        if obj.tag == "vector":
+        elif obj.tag == "vector":
             return "[%s]" % " ".join([dumps(item) for item in obj.rep])
         elif obj.tag == "char":
             return "\\%s" % CHARS.get(obj.rep, obj.rep)
@@ -239,9 +246,7 @@ def dumps(obj):
     elif isinstance(obj, (list, tuple)):
         return "[%s]" % " ".join([dumps(item) for item in obj])
     elif isinstance(obj, dict):
-        keyvals = ", ".join([" ".join([dumps(k), dumps(v)]) \
-                                for k, v in obj.items()])
-        return "{%s}" % keyvals
+        return dumps_cmap(obj.items())
     elif isinstance(obj, Keyword):
         return ":" + str(obj)
     elif isinstance(obj, Symbol):

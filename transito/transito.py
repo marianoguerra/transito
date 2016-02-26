@@ -66,7 +66,12 @@ def parse_args():
 class EdnListHandler(object):
     @staticmethod
     def from_rep(l):
-        return transit.transit_types.TaggedValue("list", l)
+        return transit.transit_types.List(l)
+
+class EdnMapHandler(object):
+    @staticmethod
+    def from_rep(l):
+        return transit.transit_types.CMap(l)
 
 class JsonListHandler(object):
     @staticmethod
@@ -79,7 +84,8 @@ class JsonFromRep(object):
         return rep
 
 EDN_HANDLERS = {
-    "list": EdnListHandler
+    "list": EdnListHandler,
+    "cmap": EdnMapHandler
 }
 
 JSON_HANDLERS = {
